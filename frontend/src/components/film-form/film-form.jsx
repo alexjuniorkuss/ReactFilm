@@ -1,52 +1,128 @@
 import 'date-fns';
 import {React,Component}  from 'react';
-import DateFnsUtils from '@date-io/date-fns';
-import {TextField,Button,FormControl,MenuItem,Grid } from '@material-ui/core';
-import {MuiPickersUtilsProvider,KeyboardDatePicker} from '@material-ui/pickers';
+import {makeStyles,TextField,Button,FormControl,NativeSelect } from '@material-ui/core';
+import Film from '../../Model/Film';
 
 class FilmForm extends Component{
+    id;
+    namefilm;
+    releasedate;
+    timemovie;
+    category;   
 
-    constructor(){
-        super()
-        this.state = {
-            selectedDate : this.selectedDate,
-            setSelectedDate : this.setSelectedDate
+        useStyles = makeStyles((theme) => (
+            {
+                container: {display: 'flex',flexWrap: 'wrap',
+            },
+          textField: {
+          marginLeft: theme.spacing(1),
+          marginRight: theme.spacing(1),
+          width: 200,
+        },
+        }));
+       // classes = this.useStyles();
+        
+        handleId(event)
+        {
+            this.id = event.target.value;
+        } 
+        handleNameFilm(event)
+        {
+            this.namefilm = event.target.value;
+        } 
+        handleDateChange(event)
+        {
+            this.releasedate = event.target.value;
         }
-    }
-        MaterialUIPickers(){
-        [this.selectedDate, this.setSelectedDate] = this.useState(new Date('2021-08-18'))
-        this.handleDateChange = (date) => {this.setSelectedDate(date) }
-    } 
+        handleTimeMovie(event)
+        {
+            this.timemovie = event.target.value;
+        }
+        handleCategory(event)
+        {
+            this.category = event.target.value;
+        }
+        handleSubmit(event)
+        {
+            event.stopPropagation();
+            event.preventDefault();
+            let film = new Film();
+            film.id = this.id;
+            film.namefilm = this.namefilm;
+            film.releasedate = this.releasedate;
+            film.category = this.category;
+            film.timemovie = this.timemovie;
+            this.props.create(film);
+        }
     render(){ 
-        return ( 
+        return (
+            <form onSubmit={this.handleSubmit.bind(this)}>
             <FormControl fullWidth >
-                 <TextField  
-                id="name-film" 
-                label="Film Name" 
-                />
-                <TextField id="select" label="Category" value="0" select>
-                <MenuItem value="10">Terror</MenuItem>
-                <MenuItem value="20">Comedy</MenuItem>
-                </TextField>
-                <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                    <Grid container justify='space-around'>
-                    <KeyboardDatePicker
-                    disableToolbar
-                    variant='dialog'
-                    format="MM/dd/yyyy"
+                <TextField
+                    fullWidth
                     margin="normal"
-                    id="release-date"
+                    variant="outlined"
+                    color="secondary"
+                    id="id"
+                    label="Id"
+                    type="number"
+                    onChange={this.handleId.bind(this)}
+                />
+                 <TextField  
+                    variant="outlined"
+                    color="secondary"
+                    id="namefilm" 
+                    type="text"
+                    label="Film" 
+                    onChange={this.handleNameFilm.bind(this)}
+                />
+                 <label id="labelCateogory">Category</label>
+
+                <NativeSelect
+                    defaultValue='none'
+                    margin ='none'
+                    id="category" 
+                    onChange={this.handleCategory.bind(this)}
+                >
+                    <option value="">None</option>
+                    <option value="Terror">Terror</option>
+                    <option value="Avanture">Avanture</option>
+                    <option value="Drama">Drama</option>
+                </NativeSelect>
+
+                <TextField
+                    fullWidth
+                    margin="normal"
+                    id="releasedate"
                     label="Release Date"
-                    value={this.selectedDate}
-                    onChange={this.handleDateChange}
-                    KeyboardButtonProps={{
-                        'aria-label': 'change date',
-                        }}
-                    />
-                    <Button variant="outlined" color="primary">Save</Button>
-                    </Grid>
-                </MuiPickersUtilsProvider>
-            </FormControl>
-        )}
+                    type='date'
+                    InputLabelProps={{
+                        shrink: true,
+                    }}
+                    onChange={this.handleDateChange.bind(this)}
+                />
+
+                <TextField
+                    id="timemovie"
+                    label="Time of Movie"
+                    margin="normal"
+                    type="time-movie"
+                    variant="outlined"
+                    color="secondary"
+                    defaultValue="00:00"
+                    InputLabelProps={{
+                    shrink: true,
+                    }}
+                    inputProps={{step: 300 }} // 5 min
+                    onChange={this.handleTimeMovie.bind(this)}
+                />
+            
+                    <Button type="submit" variant="contained" color="primary">
+                        Save
+                    </Button>
+                </FormControl>
+            </form>
+            );
+    }
 }
 export default FilmForm;
