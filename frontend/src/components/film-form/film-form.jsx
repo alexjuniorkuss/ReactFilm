@@ -1,62 +1,32 @@
 import 'date-fns';
-import {React,Component}  from 'react';
-import {makeStyles,TextField,Button,FormControl,NativeSelect } from '@material-ui/core';
-import Film from '../../Model/Film';
+import React, {useState}  from 'react';
+import {TextField,Button,FormControl,NativeSelect } from '@material-ui/core';
+import Film from '../../Model/Film'
 
-class FilmForm extends Component{
-    id;
-    namefilm;
-    releasedate;
-    timemovie;
-    category;   
+function FilmForm({create,repoCat}){
+    let [lista, setList] = useState(repoCat.listar());
+    repoCat.inscrever(setList)
 
-        useStyles = makeStyles((theme) => (
-            {
-                container: {display: 'flex',flexWrap: 'wrap',
-            },
-          textField: {
-          marginLeft: theme.spacing(1),
-          marginRight: theme.spacing(1),
-          width: 200,
-        },
-        }));
-       // classes = this.useStyles();
-        
-        handleId(event)
-        {
-            this.id = event.target.value;
-        } 
-        handleNameFilm(event)
-        {
-            this.namefilm = event.target.value;
-        } 
-        handleDateChange(event)
-        {
-            this.releasedate = event.target.value;
-        }
-        handleTimeMovie(event)
-        {
-            this.timemovie = event.target.value;
-        }
-        handleCategory(event)
-        {
-            this.category = event.target.value;
-        }
-        handleSubmit(event)
-        {
-            event.stopPropagation();
-            event.preventDefault();
-            let film = new Film();
-            film.id = this.id;
-            film.namefilm = this.namefilm;
-            film.releasedate = this.releasedate;
-            film.category = this.category;
-            film.timemovie = this.timemovie;
-            this.props.create(film);
-        }
-    render(){ 
         return (
-            <form onSubmit={this.handleSubmit.bind(this)}>
+            <form onSubmit={(e) =>{
+                e.stopPropagation();
+                e.preventDefault();
+                let model={
+                    id : e.target[0].value,
+                    nameFilm : e.target.nameFilm.value,
+                    category : e.target.category.value,
+                    releasedate : e.target.releasedate.value,
+                    timemovie : e.target.timemovie.value
+                }
+                create(new Film(model));
+                e.target.nameFilm.value = "";
+                e.target.id.value = "";
+                e.target.category.value = "defaultValue";
+                e.target.releasedate.value = "defaultValue";
+                e.target.timemovie.value = "00:00";
+            }} 
+            >
+            
             <FormControl fullWidth >
                 <TextField
                     fullWidth
@@ -66,29 +36,27 @@ class FilmForm extends Component{
                     id="id"
                     label="Id"
                     type="number"
-                    onChange={this.handleId.bind(this)}
                 />
                  <TextField  
                     variant="outlined"
                     color="secondary"
-                    id="namefilm" 
+                    id="nameFilm" 
                     type="text"
-                    label="Film" 
-                    onChange={this.handleNameFilm.bind(this)}
+                    label="Film"                     
                 />
-                 <label id="labelCateogory">Category</label>
-
-                <NativeSelect
-                    defaultValue='none'
-                    margin ='none'
-                    id="category" 
-                    onChange={this.handleCategory.bind(this)}
-                >
-                    <option value="">None</option>
-                    <option value="Terror">Terror</option>
-                    <option value="Avanture">Avanture</option>
-                    <option value="Drama">Drama</option>
-                </NativeSelect>
+                 
+                    <NativeSelect
+                        defaultValue='none'
+                        id="category" 
+                    >
+                        {lista.map((c,i)=>{
+                            return <option key={i} value={c.idcat}>{c.categorycat}</option>;
+                        })}
+                        {/* <option value="">Category</option>
+                        <option value="Terror">Terror</option>
+                        <option value="Avanture">Avanture</option>
+                        <option value="Drama">Drama</option> */}
+                    </NativeSelect>
 
                 <TextField
                     fullWidth
@@ -99,7 +67,7 @@ class FilmForm extends Component{
                     InputLabelProps={{
                         shrink: true,
                     }}
-                    onChange={this.handleDateChange.bind(this)}
+                    
                 />
 
                 <TextField
@@ -114,7 +82,7 @@ class FilmForm extends Component{
                     shrink: true,
                     }}
                     inputProps={{step: 300 }} // 5 min
-                    onChange={this.handleTimeMovie.bind(this)}
+                    
                 />
             
                     <Button type="submit" variant="contained" color="primary">
@@ -123,6 +91,5 @@ class FilmForm extends Component{
                 </FormControl>
             </form>
             );
-    }
 }
 export default FilmForm;

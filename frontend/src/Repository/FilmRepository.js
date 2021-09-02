@@ -18,10 +18,10 @@ notificar()
 {
     this.#incritos.forEach(insc => {insc(this.#list)});
 }
-create(film)
+create(model)
 {
-    this.#list = [...this.#list, film];
-    console.log(this.#list);
+    this.#list = [...this.#list, model];
+   // console.log(this.#list);
     this.notificar();
 }
 listar()

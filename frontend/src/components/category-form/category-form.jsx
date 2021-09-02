@@ -1,35 +1,23 @@
 import 'date-fns';
-import {React,Component}  from 'react';
-import {makeStyles,TextField,Button,FormControl} from '@material-ui/core';
+import React  from 'react';
+import {TextField,Button,FormControl} from '@material-ui/core';
+import '../../assets/css/filmform.css';
+import Category  from '../../Model/Category'; 
 
-class CategoryForm extends Component{
-    id;
-    nameCat;
-
-    constructor(){
-        super()
-        this.state = {
-            selectedDate : this.selectedDate,
-            setSelectedDate : this.setSelectedDate
-        }
-    }
-        useStyles = makeStyles((theme) => ({
-        container: {
-          display: 'flex',
-          flexWrap: 'wrap',
-        },
-        textField: {
-          marginLeft: theme.spacing(1),
-          marginRight: theme.spacing(1),
-          width: 200,
-        },
-        }));
-        handleId(event)
-        {
-
-        } 
-    render(){ 
+function CategoryForm({create}){
         return ( 
+            <form onSubmit={(e) =>{
+                e.stopPropagation();
+                e.preventDefault();
+                let cate = {
+                    idcat : e.target.idcat.value,
+                    categorycat : e.target.categorycat.value
+                }
+                create(new Category(cate));
+                e.target.idcat.value = "";
+                e.target.categorycat.value = "";
+            }}>
+
             <FormControl fullWidth >
                 <TextField
                     fullWidth
@@ -39,16 +27,18 @@ class CategoryForm extends Component{
                     id="idcat"
                     label="Id"
                     type="number"
-                    onChange={this.handleId.bind(this)}
                 />
                  <TextField  
                 id="categorycat" 
                 label="Category" 
                 variant="outlined"
-                    color="secondary"
+                margin="normal"
+                color="secondary"
                 />
-                <Button margin="normal"variant="outlined" color="primary">Save</Button>
+               <Button  type="submit" variant="contained" color="primary">
+                        Save
+                    </Button>
             </FormControl>
+            </form>
         )}
-}
 export default CategoryForm;
